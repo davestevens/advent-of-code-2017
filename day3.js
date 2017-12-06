@@ -1,48 +1,52 @@
 // day3.js
 // http://adventofcode.com/2017/day/3
 
-const percent = (fromSquare, toSquare, input) => {
-    const diff = ((toSquare - fromSquare) - 1);
-    return (toSquare - input) / diff;
+const getDistance = (coords) => (Math.abs(coords[0]) + Math.abs(coords[1]));
+
+const oddSquareCoords = (value) => {
+    const coord = Math.floor(Math.sqrt(value) / 2);
+    return [coord, -coord];
 }
 
-const oddToEven = (from, to, input) => {
-    const fromSquare = from ** 2;
-    const toSquare = to ** 2;
-    if (percent(fromSquare, toSquare, input) > 0.5) { // right level
-        return [Math.floor(from / 2) + 1, -Math.floor(from / 2) + ((input - fromSquare) - 1)];
-    } else { // top level
-        return [-(to / 2) + (toSquare - input) + 1, to / 2];
-    }
-    return [NaN, NaN];
+const evenSquareCoords = (value) => {
+    const coord = Math.floor(Math.sqrt(value) / 2);
+    return [-(coord - 1), coord];
 }
 
-const evenToOdd = (from, to, input) => {
-    const fromSquare = from ** 2;
-    const toSquare = to ** 2;
-    if (percent(fromSquare, toSquare, input) > 0.5) { // left level
-        return [-(from / 2), from / 2 - ((input - fromSquare) - 1)]
-    } else { // bottom level
-        return [Math.floor(to / 2) - (toSquare - input), -Math.floor(to / 2)];
-    }
-    return [NaN, NaN];
+const clockwise = (from, to) => {
+    const isEven = !(from % 2);
+    const coords = isEven ? evenSquareCoords(from) : oddSquareCoords(from);
+
+    return [
+        coords[0] + (isEven ? (from - to) : -(from - to)),
+        coords[1]
+    ];
 }
 
-const getDistance = (coords) => {
-    return (Math.abs(coords[0]) + Math.abs(coords[1]));
+const antiClockwise = (from, to) => {
+    const isEven = !(from % 2);
+    const coords = isEven ? evenSquareCoords(from) : oddSquareCoords(from);
+
+    return [
+        coords[0] + (isEven ? -1 : 1),
+        coords[1] + (isEven ? -((to - from) - 1) : ((to - from) - 1))
+    ];
 }
 
-const closestSquare = (input) => {
-    return Math.ceil(Math.sqrt(input));
-}
+const closestSquare = (input) => Math.round(Math.sqrt(input)) ** 2;
 
 export const getCoords = (input) => {
-    const to = closestSquare(input);
-    const from = to - 1;
-    if (from % 2) {
-        return oddToEven(from, to, input);
+    const closest = closestSquare(input);
+    if (closest < input) {
+        return antiClockwise(closest, input);
+    } else if (closest > input) {
+        return clockwise(closest, input);
     } else {
-        return evenToOdd(from, to, input);
+        if (input % 2) {
+            return oddSquareCoords(input);
+        } else {
+            return evenSquareCoords(input);
+        }
     }
 }
 
