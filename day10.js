@@ -24,7 +24,7 @@ class Data {
 const NUMBER_OF_ROUNDS = 64;
 const LENGTHS_SUFFIX = [17, 31, 73, 47, 23];
 
-class KnotHash {
+export class KnotHash {
     constructor(size = 256) {
         this.sparseHash = new Data(size);
 
