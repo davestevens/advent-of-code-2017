@@ -30,11 +30,11 @@ class Memory {
     }
 }
 
-const INSTURCTION_PATTERN = /(\w+) (inc|dec) (-?\d+) if (\w+) ([><!=]+) (-?\d+)/;
+const INSTRUCTION_PATTERN = /(\w+) (inc|dec) (-?\d+) if (\w+) ([><!=]+) (-?\d+)/;
 
 class Instruction {
     constructor(text) {
-        const match = text.match(INSTURCTION_PATTERN);
+        const match = text.match(INSTRUCTION_PATTERN);
         this.condition = this.buildCondition(match[4], match[5], +match[6]);
         this.evaluate = this.buildEvaluation(match[1], match[2], +match[3]);
     }
